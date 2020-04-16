@@ -1,4 +1,5 @@
 $(document).ready(function($) {
+    let posision = 0;
     let total = 0;
     let listado = [];
     let storage = getStorage();
@@ -17,11 +18,15 @@ $(document).ready(function($) {
         $(".img-thumbnail").hide();
     });
 
+    $("#listado").on('click', '.btn-danger', function(){
+        const id = $(this).data('id');
+        removeStorage(id);
+    });
+
     function dibujarListado(listado){
         if (listado) {
-            listado.forEach(element => {
-                console.log(element);
-                $('#listado').append("<tr> <td>#</td> <td>" + element.nombre  + "</td> <td> " + element.cantidad + " </td> <td> $" + element.precio + "</td> </tr>");
+            listado.forEach((element, index) => {
+                agregarItem(element.nombre, element.cantidad, element.precio, index);
                 calcularTotal(element.precio);
             });
             $(".img-thumbnail").hide();
@@ -29,8 +34,24 @@ $(document).ready(function($) {
     }
 
     function agregarAlListado(producto, cantidad, precio){
-        $('#listado').append("<tr> <td>#</td> <td>" + producto  + "</td> <td> " + cantidad + " </td> <td> $" + precio + "</td> </tr>");
-        listado.push({nombre: producto, cantidad: cantidad, precio: precio});
+        if(cantidad > 0 && precio > 0 ) {
+            agregarItem(producto, cantidad, precio, posision );
+            listado.push({nombre: producto, cantidad: cantidad, precio: precio});
+            posision++;
+        }
+            
+    }
+    function agregarItem(producto, cantidad, precio, index){
+        $('#listado').append(`
+                <tr id="lista-${index}">
+                 <td>#</td> 
+                 <td>${producto}</td> 
+                 <td>${cantidad}</td> 
+                 <td>${precio}</td>
+                 <td>
+                 <button type="button" class="btn btn-danger" data-id="${index}">Eliminar</button>
+                 </td>
+                </tr>`);
     }
 
     function calcularTotal(precio) {
@@ -47,8 +68,13 @@ $(document).ready(function($) {
         return JSON.parse(item);
     }
 
-
-
+    function removeStorage(posision) {
+        $("#lista-"+posision).remove();
+        storage = storage.filter(function(item, index) {
+            return index !== posision
+        });
+        setStorage(storage);
+    }
 
 
 
