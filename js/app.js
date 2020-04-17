@@ -20,7 +20,9 @@ $(document).ready(function($) {
 
     $("#listado").on('click', '.btn-danger', function(){
         const id = $(this).data('id');
+        const precio = $("#lista-"+id+" .item-precio").text();
         removeStorage(id);
+        calcularTotal(-precio);
     });
 
     function dibujarListado(listado){
@@ -45,9 +47,9 @@ $(document).ready(function($) {
         $('#listado').append(`
                 <tr id="lista-${index}">
                  <td>#</td> 
-                 <td>${producto}</td> 
-                 <td>${cantidad}</td> 
-                 <td>${precio}</td>
+                 <td class="item-producto">${producto}</td> 
+                 <td class="item-cantidad">${cantidad}</td> 
+                 <td class="item-precio">${precio}</td>
                  <td>
                  <button type="button" class="btn btn-danger" data-id="${index}">Eliminar</button>
                  </td>
@@ -74,8 +76,7 @@ $(document).ready(function($) {
             return index !== posision
         });
         setStorage(storage);
+
     }
-
-
 
 });
